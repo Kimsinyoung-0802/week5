@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>포트폴리오 - 종목 추가</title>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css" rel="stylesheet">
+    
+    <link rel="stylesheet" href="my.css">
+</head>
+<body>
+
+    <header class="bg-dark text-white text-center py-4">
+        <div class="container">
+            <h1 class="display-4">📝 종목 추가하기</h1>
+            <p class="lead">새로운 투자 종목 정보를 입력합니다.</p>
+        </div>
+    </header>
+
+    <main class="container my-5">
+        
+        <form name="addForm" action="index.html" onsubmit="return validateForm()">
+            <div class="mb-3">
+                <label for="stockName" class="form-label">종목명</label>
+                <input type="text" class="form-control" id="stockName" name="stockName" placeholder="예: 삼성전자">
+            </div>
+
+            <div class="mb-3">
+                <label for="ticker" class="form-label">종목코드</label>
+                <input type="text" class="form-control" id="ticker" name="ticker" placeholder="예: 005930">
+            </div>
+
+            <div class="mb-3">
+                <label for="quantity" class="form-label">보유 수량</label>
+                <input type="number" class="form-control" id="quantity" name="quantity" placeholder="숫자만 입력">
+            </div>
+
+            <div class="mb-3">
+                <label for="purchasePrice" class="form-label">평균 매수 단가</label>
+                <input type="text" class="form-control" id="purchasePrice" name="purchasePrice" placeholder="$, 숫자만 입력">
+            </div>
+
+            <div class="mb-3">
+                <label for="purchaseDate" class="form-label">매수 날짜</label>
+                <input type="date" class="form-control" id="purchaseDate" name="purchaseDate">
+            </div>
+            
+            <div class="mb-3">
+                <label for="memo" class="form-label">메모</label>
+                <textarea class="form-control" id="memo" name="memo" rows="3"></textarea>
+            </div>
+
+            <div class="d-flex justify-content-end gap-2">
+                <button type="submit" class="btn btn-primary">확인</button>
+                <a href="index.html" class="btn btn-secondary">취소</a>
+            </div>
+        </form>
+    </main>
+
+    <footer class="text-center text-muted py-3 mt-auto">
+        <p>&copy; 2025 My Portfolio. All Rights Reserved.</p>
+    </footer>
+
+    <script>
+        function validateForm() {
+            const stockName = document.forms["addForm"]["stockName"].value;
+            const ticker = document.forms["addForm"]["ticker"].value;
+            const quantity = document.forms["addForm"]["quantity"].value;
+            const purchasePrice = document.forms["addForm"]["purchasePrice"].value;
+
+            // 1. 종목명 검사
+            if (stockName == "") {
+                alert("종목명을 입력해주세요.");
+                document.forms["addForm"]["stockName"].focus();
+                return false; 
+            }
+
+            // 2. 종목코드 검사
+            if (ticker == "") {
+                alert("종목코드를 입력해주세요.");
+                document.forms["addForm"]["ticker"].focus();
+                return false;
+            }
+            
+            //3. 보유 수량 검사
+            if (quantity == "") {
+                alert("보유 수량을 입력해주세요.");
+                document.forms["addForm"]["quantity"].focus();
+                return false;
+            }
+            
+            //4 4. 평단가 검사
+            if (purchasePrice == "") {
+                alert("평균 매수 단가를 입력해주세요.");
+                document.forms["addForm"]["purchasePrice"].focus();
+                return false;
+            }
+            // 다 통과했을 때 
+            alert("게시물이 추가됩니다.");
+            return true;    
+        }
+    </script>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
