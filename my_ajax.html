@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AJAX CRUD 과제</title>
+    <script src="https://code.jquery.com/jquery-3.7.1.js"></script>
+    <style>
+        body { font-family: sans-serif; margin: 20px; }
+        #div_list { margin-top: 15px; border: 1px solid #ccc; padding: 10px; min-height: 100px; }
+        .input-group { margin-bottom: 10px; }
+        .input-group label { display: inline-block; width: 100px; }
+        .student-item { padding: 5px; border-bottom: 1px dotted #eee; }
+        .student-item button { margin-left: 5px; }
+    </style>
+</head>
+<body>
+
+    <h2>학생 관리 시스템 (AJAX)</h2>
+
+    <div class="input-group">
+        <label for="input_id">ID:</label>
+        <input type="text" id="input_id" placeholder="수정/삭제/조회 시 사용" />
+    </div>
+    <div class="input-group">
+        <label for="input_name">Name:</label>
+        <input type="text" id="input_name" />
+    </div>
+    <div class="input-group">
+        <label for="input_age">Age:</label>
+        <input type="number" id="input_age" />
+    </div>
+    <div class="input-group">
+        <label for="input_major">Major:</label>
+        <input type="text" id="input_major" />
+    </div>
+    <div class="input-group">
+        <label for="input_studentId">Student ID:</label>
+        <input type="text" id="input_studentId" />
+    </div>
+
+    <button id="btn_add">신규 등록 (Create)</button>
+    <button id="btn_update">정보 수정 (Update)</button>
+    <hr>
+    <button id="btn_list">전체 목록 (Read)</button>
+    <button id="btn_delete">선택 삭제 (Delete)</button>
+    
+    <h3>학생 목록</h3>
+    <div id="div_list">
+        (목록 버튼을 눌러주세요)
+    </div>
+
+    <script>
+        // JQuery: 문서가 준비되면 실행
+        $(function() {
+            const API_URL = "http://localhost:3000/students";
+
+            // 1. Read (목록 보기)
+            $("#btn_list").click(function() {
+                const xhr = new XMLHttpRequest();
+                xhr.open("GET", API_URL);
+                xhr.setRequestHeader("content-type", "application/json");
+                xhr.send();
+
+                xhr.onload = () => {
+                    if (xhr.status === 200) {
+                        const students = JSON.parse(xhr.response);
+                        $("#div_list").html(""); // 목록 초기화
+
+                        students.forEach(function(student) {
+                            // my_data.json의 모든 항목 표시
+                            let itemHtml = `
+                                <div class="student-item" data-id="${student.id}">
+                                    <strong>${student.id}. ${student.name}</strong> (${student.age}세, ${student.major}, ${student.studentId})
+                                    <button class="btn-edit-load">수정용 불러오기</button>
+                                </div>
+                            `;
+                            $("#div_list").append(itemHtml);
+                        });
+                    } else {
+                        console.error("GET Error:", xhr.status, xhr.statusText);
+                    }
+                }
+            });
+
+            // 2. Create (입력하기)
+            $("#btn_add").click(function() {
+                const xhr = new XMLHttpRequest();
+                xhr.open("POST", API_URL);
+                xhr.setRequestHeader("content-type", "application/json");
+
+                // my_data.json 형식에 맞게 4가지 필드 전송
+                let data = { 
+                    name: $("#input_name").val(), 
+                    age: parseInt($("#input_age").val()), // 숫자로 변환
+                    major: $("#input_major").val(),
+                    studentId: $("#input_studentId").val()
+                };
+
+                xhr.send(JSON.stringify(data));
+                
+                xhr.onload = () => {
+                    // json-server는 POST 성공 시 201(Created)을 반환합니다.
+                    if (xhr.status === 201) { 
+                        alert("신규 학생 등록 성공!");
+                        $("#btn_list").click(); // 목록 새로고침
+                        // 입력 필드 초기화
+                        $("#input_name, #input_age, #input_major, #input_studentId").val("");
+                    } else {
+                        console.error("POST Error:", xhr.status, xhr.statusText);
+                    }
+                }
+            });
+
+            // 3. Update (수정하기)
+            $("#btn_update").click(function() {
+                const id = $("#input_id").val();
+                if (!id) {
+                    alert("ID 입력란에 수정할 학생의 ID를 입력하세요.");
+                    return;
+                }
+
+                const xhr = new XMLHttpRequest();
+                xhr.open("PUT", `${API_URL}/${id}`); // URL에 ID 포함
+                xhr.setRequestHeader("content-type", "application/json");
+
+                let data = { 
+                    name: $("#input_name").val(), 
+                    age: parseInt($("#input_age").val()),
+                    major: $("#input_major").val(),
+                    studentId: $("#input_studentId").val()
+                };
+                
+                xhr.send(JSON.stringify(data));
+
+                xhr.onload = () => {
+                    if (xhr.status === 200) {
+                        alert("학생 정보 수정 성공!");
+                        $("#btn_list").click(); // 목록 새로고침
+                        // 입력 필드 초기화
+                        $("#input_id, #input_name, #input_age, #input_major, #input_studentId").val("");
+                    } else {
+                        console.error("PUT Error:", xhr.status, xhr.statusText);
+                    }
+                }
+            });
+
+            // 4. Delete (삭제하기)
+            $("#btn_delete").click(function() {
+                const id = $("#input_id").val();
+                if (!id) {
+                    alert("ID 입력란에 삭제할 학생의 ID를 입력하세요.");
+                    return;
+                }
+
+                if (!confirm(id + "번 학생 정보를 정말 삭제하시겠습니까?")) {
+                    return; // 사용자가 '취소'를 누르면 중단
+                }
+
+                const xhr = new XMLHttpRequest();
+                xhr.open("DELETE", `${API_URL}/${id}`); // URL에 ID 포함
+                xhr.setRequestHeader("content-type", "application/json");
+                xhr.send();
+
+                xhr.onload = () => {
+                    if (xhr.status === 200) {
+                        alert("학생 정보 삭제 성공!");
+                        $("#btn_list").click(); // 목록 새로고침
+                        $("#input_id").val("");
+                    } else {
+                        console.error("DELETE Error:", xhr.status, xhr.statusText);
+                    }
+                }
+            });
+
+            // (보너스 기능) 목록에서 '수정용 불러오기' 버튼 클릭 시
+            // JQuery의 동적 이벤트 바인딩 (on) 사용
+            $("#div_list").on("click", ".btn-edit-load", function() {
+                // 클릭된 버튼이 속한 .student-item 찾기
+                const item = $(this).closest(".student-item");
+                const id = item.data("id");
+                
+                // 해당 ID의 데이터만 GET으로 가져오기
+                const xhr = new XMLHttpRequest();
+                xhr.open("GET", `${API_URL}/${id}`);
+                xhr.setRequestHeader("content-type", "application/json");
+                xhr.send();
+
+                xhr.onload = () => {
+                    if (xhr.status === 200) {
+                        const student = JSON.parse(xhr.response);
+                        // 입력 폼에 데이터 채우기
+                        $("#input_id").val(student.id);
+                        $("#input_name").val(student.name);
+                        $("#input_age").val(student.age);
+                        $("#input_major").val(student.major);
+                        $("#input_studentId").val(student.studentId);
+                        alert(student.id + "번 학생 정보를 입력 폼에 불러왔습니다.");
+                    } else {
+                        console.error("GET (Detail) Error:", xhr.status, xhr.statusText);
+                    }
+                }
+            });
+        });
+    </script>
+</body>
+</html>

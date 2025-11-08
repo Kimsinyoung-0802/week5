@@ -1,0 +1,88 @@
+{
+  "students": [
+    {
+      "name": "김철자",
+      "age": 23,
+      "major": "컴퓨터공학",
+      "studentId": "22000101",
+      "id": "1"
+    },
+    {
+      "id": "2",
+      "name": "이영희",
+      "age": 21,
+      "major": "경영학과",
+      "studentId": "22200202"
+    },
+    {
+      "id": "4",
+      "name": "최유리",
+      "age": 22,
+      "major": "법학과",
+      "studentId": "22100404"
+    },
+    {
+      "id": "5",
+      "name": "정민준",
+      "age": 24,
+      "major": "컴퓨터공학",
+      "studentId": "21900505"
+    },
+    {
+      "id": "6",
+      "name": "한지우",
+      "age": 20,
+      "major": "생명과학부",
+      "studentId": "22300606"
+    },
+    {
+      "id": "7",
+      "name": "송혜교",
+      "age": 26,
+      "major": "국제어문",
+      "studentId": "21700707"
+    },
+    {
+      "id": "8",
+      "name": "강동원",
+      "age": 23,
+      "major": "상담심리",
+      "studentId": "22000808"
+    },
+    {
+      "id": "9",
+      "name": "윤아",
+      "age": 22,
+      "major": "시각디자인",
+      "studentId": "22100909"
+    },
+    {
+      "id": "10",
+      "name": "차은우",
+      "age": 24,
+      "major": "컴퓨터공학",
+      "studentId": "21901010"
+    },
+    {
+      "id": "45b8",
+      "name": "",
+      "age": null,
+      "major": "",
+      "studentId": ""
+    },
+    {
+      "id": "d405",
+      "name": "",
+      "age": null,
+      "major": "",
+      "studentId": ""
+    },
+    {
+      "id": "aba8",
+      "name": "김신영",
+      "age": 22,
+      "major": "컴퓨터공학 ",
+      "studentId": "22200114"
+    }
+  ]
+}
